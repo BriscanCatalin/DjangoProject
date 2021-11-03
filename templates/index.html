@@ -1,0 +1,28 @@
+{% load static %}
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+
+
+  hello <div>{{user}}</div>
+  <a href="{% url 'logout' %}">LOGOUT</a>
+    GROUP CHAT with ID ||||||{{current_chat}}||||||
+</head>
+<body>
+<br />
+
+
+<div id="chatbox">
+        <!--filled by jQuery-->
+</div>
+
+<!--Form for adding new messages-->
+<form action="/addmessage/" method="post">
+    {% csrf_token %}
+    <input for="admessage" type="text" name="message">
+    <input type="submit" value="Send">
+</form>
+
+</body>
