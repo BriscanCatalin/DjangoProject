@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect
-from .models import Room, Message
+from .models import Room, Message, NewUserForm
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
+
 
 @login_required()
 def home(request):
     return render(request, 'home.html')
 
 
-def room(request, room):
+def room_(request, room):
     username = request.GET.get('username')
     room_details = Room.objects.get(name=room)
     return render(request, 'room.html', {
@@ -37,9 +40,10 @@ def send(request):
     message = request.POST['message']
     username = request.POST['username']
     room_id = request.POST['room_id']
+    profile_image = request.POST['profile_image']
 
     new_message = Message.objects.create(
-        value=message, user=username, room=room_id
+        value=message, user=username, room=room_id, profile_image=profile_image
     )
     new_message.save()
     return HttpResponse("Hi, Message Sent Successfully!")
@@ -49,6 +53,7 @@ def getMessages(request, room):
     room_details = Room.objects.get(name=room)
     messages = Message.objects.filter(room=room_details.id)
     return JsonResponse({"messages": list(messages.values())})
+
 
 def login_view(request):
     if request.method == "POST":
@@ -63,6 +68,20 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+
 def logout_user(request):
     logout(request)
-    return redirect("login")
+    return render(request, 'login.html')
+
+
+def register(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registrations successful!")
+            return render(request, 'home.html')
+        messages.error(request, "Unsuccessful registration.")
+    form = NewUserForm()
+    return render(request, 'register.html', context={"register_form": form})

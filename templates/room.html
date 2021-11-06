@@ -20,16 +20,16 @@ svg{
 }
 
 .container {
-  background-color: #f1f1f1;
+  background-color: #026a58;
   border-radius: 10px;
   padding: 10px;
-  margin: 10px 0;
+  margin: 10px 0px;
 }
 
 .darker {
   border-color: rgba(0, 0, 0, 0);
   box-shadow: 1px 4px 5px 1px rgba(0, 0, 0, 0.253);
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(3, 93, 43);
 }
 
 .container::after {
@@ -123,7 +123,10 @@ setInterval(function(){
             $("#display").empty();
             for (var key in response.messages)
             {
-                var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+response.messages[key].date+"</span></div>";
+                var temp="<div class='container darker'><b>"+response.messages[key].user+"</b>" +
+                    "<p>"+response.messages[key].value+"</p>" +
+                    "<span class='time-left'>"+response.messages[key].date+"</span>" +
+                    "</div>";
                 $("#display").append(temp);
             }
         },
@@ -131,7 +134,7 @@ setInterval(function(){
             // alert('An error occurred')
         }
     });
-},1000);
+},3000);
 })
 </script>
 
@@ -170,7 +173,7 @@ setInterval(function(){
     }
 
     input[type=submit]:hover {
-    background-color: #4c00ff;
+    background-color: #63ff95;
     }
     #input1{
       border-radius: 35px;
@@ -189,20 +192,39 @@ setInterval(function(){
 
     }
 
+    input[type=file]::file-selector-button {
+      border: 2px solid #6c5ce7;
+      padding: .2em .4em;
+      border-radius: .2em;
+      background-color: #a29bfe;
+      transition: 1s;
+    }
+
+    input[type=file]::file-selector-button:hover {
+      background-color: #81ecec;
+      border: 2px solid #00cec9;
+    }
+
     </style>
     <br>
+
+    <img class="border  profile-image" id="id_profile_image_display"
+               src="{{form.initial.profile_image.url}}">
+
     <div id="form-div">
-      <form id="post-form">
+      <form id="post-form" enctype="multipart/form-data">
           {% csrf_token %}
           <input type="hidden" name="username" id="username" value="{{username}}"/>
           <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
           <textarea class="form-control" aria-label="With textarea" type="text" name="message" id="message" style="margin-top: 10px;"></textarea>
+          <input type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
+
           <input type="submit" value="Send">
       </form>
   </div>
 </div>
-<h5 >&copy;	Copyright Reserved Catalin - 2021</h5>
-<h6>Made by Briscan Catalin &hearts;	</h6>
+<h5 color="black">&copy;	Copyright Reserved Catalin - 2021</h5>
+<h6 color="black">Made by Briscan Catalin &hearts;	</h6>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -211,9 +233,25 @@ setInterval(function(){
 </body>
 
 <script type="text/javascript">
+
+    var image = null
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                image = e.target.result
+                var imageField = document.getElementById('id_profile_image_display')
+                imageField.src = image
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+
     $(document).on('submit','#post-form',function(e){
     e.preventDefault();
-
     $.ajax({
       type:'POST',
       url:'/send',
@@ -221,13 +259,16 @@ setInterval(function(){
           username:$('#username').val(),
           room_id:$('#room_id').val(),
           message:$('#message').val(),
+          profile_image:image,
         csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
       },
       success: function(data){
-         //alert(data)
+          console.log(data)
+          alert(data)
       }
     });
     document.getElementById('message').value = ''
+    document.getElementById('id_profile_image_display') .value = ''
   });
 </script>
 

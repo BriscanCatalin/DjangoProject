@@ -14,13 +14,14 @@
 			margin: 0;
 			padding: 0;
 			height: 100%;
-			background: #7abecc !important;
+			background: #2b5057 !important;
 		}
 		.user_card {
-			width: 350px;
+			width: 550px;
+            height: 380px;
 			margin-top: auto;
 			margin-bottom: auto;
-			background: #74cfbf;
+			background: #026a58;
 			position: relative;
 			display: flex;
 			justify-content: center;
@@ -103,6 +104,9 @@
 							<div class="d-flex justify-content-center mt-3 login_container">
 				 				<input class="btn login_btn" type="submit" value="Login">
 				   			</div>
+                        <div class="d-flex justify-content-center mt-3 login_container">
+                            <a class="nav-link" href="{% url 'chat:register' %}" tabindex="-1">Register</a>
+                        </div>
 					</form>
 
 				</div>
