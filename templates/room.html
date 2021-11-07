@@ -121,13 +121,28 @@ setInterval(function(){
         success: function(response){
             console.log(response);
             $("#display").empty();
+
             for (var key in response.messages)
             {
-                var temp="<div class='container darker'><b>"+response.messages[key].user+"</b>" +
-                    "<p>"+response.messages[key].value+"</p>" +
-                    "<span class='time-left'>"+response.messages[key].date+"</span>" +
-                    "</div>";
-                $("#display").append(temp);
+                if (response.messages[key].profile_image) {
+                    var image = new Image();
+                    image.src = response.messages[key].profile_image;
+                    var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b>" +
+                        "<p>" + response.messages[key].value + "</p>" +
+                        "<span class='time-left'>" + response.messages[key].date + "</span>" + "</b>" +
+                        "</div>";
+                    image.height = 240;
+                    image.width = 240;
+                    $("#display").append(temp);
+                    $("#display").append(image)
+                } else {
+                    var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b>" +
+                        "<p>" + response.messages[key].value + "</p>" +
+                        "<span class='time-left'>" + response.messages[key].date + "</span>" + "</b>" +
+                        "</div>";
+                    $("#display").append(temp);
+                }
+
             }
         },
         error: function(response){
