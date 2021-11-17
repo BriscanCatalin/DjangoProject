@@ -27,11 +27,32 @@ def room_(request, room):
 def checkview(request):
     room = request.POST['room_name']
     username = request.POST['username']
+    private = request.POST.get('private', False)
 
     if Room.objects.filter(name=room).exists():
-        return redirect('/'+room+'/?username='+username)
+        room_details = Room.objects.get(name=room)
+        print(room_details.private + " ---------------")
+        if room_details.private == "on":
+            print("private -------------- and exists")
+            if room_details.membersNo < 2:
+                print("private , exists and not enough members ----------")
+                room_details.membersNo += 1
+                room_details.save()
+                return redirect('/'+room+'/?username='+username)
+            else:
+                print("private exists enough members ----------")
+                return redirect('/home')
+        else:
+            print("not private ----------- but exists")
+            room_details = Room.objects.get(name=room)
+            room_details.membersNo += 1
+            room_details.save()
+            return redirect('/' + room + '/?username=' + username)
     else:
+        print("room does not exist ---------------",private)
         new_room = Room.objects.create(name=room)
+        new_room.private = private
+        new_room.membersNo += 1
         new_room.save()
         return redirect('/'+room+'/?username='+username)
 

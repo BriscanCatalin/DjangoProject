@@ -7,6 +7,11 @@ from django.contrib.auth.models import User
 
 class Room(models.Model):
     name = models.CharField(max_length=1000)
+    membersNo = models.IntegerField(default=0)
+    choices = (("1", "private"), ("2", "public"))
+    private = models.CharField(max_length=9,
+                               choices=choices,
+                               default="2")
 
 
 def get_profile_image_filepath(self, filename):
